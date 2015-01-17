@@ -44,6 +44,7 @@ void Circle::CheckCollision(Circle *other){
 
 	if ((distanceX * distanceX) + (distanceY * distanceY) < radii * radii){
 		this->shapePoint.setVelocity(myVx * -1.0, myVy * -1.0);
+		other->Update();
 	}
 
 }
