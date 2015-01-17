@@ -13,19 +13,19 @@
 
 #include <cmath>
 #include <cstring>
+#include "Globals.h"
 #include "Circle.h"
 #include <vector>
 #include <cstdlib>
 #include <time.h>
-#include "Globals.h"
 #include "glut.h"
 using namespace std;
 
 
 // Global Variables (Only what you need!)
-int circles = 300;
-double startVMax = 10000;
-vector<Shape *> shapes;
+const int GLOBAL_CIRCLES = 10;
+const double RANDOM_VELOCITY_MAX = 10000;
+const int MAX_FRAME_RATE = 120;
 
 
 
@@ -94,10 +94,10 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for each (Shape *shape in shapes)
+	for each (Shape *shape in mShapes)
 	{
 		//shape->OnScreen(screen_x, screen_y);
-		shape->Draw();
+		shape->Update();
 	}
 
 	glColor3d(0,0,0);
@@ -180,13 +180,11 @@ double random(int start, int end, bool percentage){
 }
 //Gets a number between 0-1 and offsets it if desired, set scaleDown to 1 if you don't want scaling
 double random(){
-	double offset;
-
 	//get a number between 0 and end (10,000 in this case)
-	double random = double(rand() % int(startVMax));
+	double random = double(rand() % int(RANDOM_VELOCITY_MAX));
 	//convert the number from 0-10,000, to 0-1.
 	//larger num for accuracy adds more accuracy, duh.
-	random /= double(startVMax);
+	random /= double(RANDOM_VELOCITY_MAX);
 	//now we divide by a scale down factor if smaller numbers are needed
 	random /= 2;
 	random -= 0.25;
@@ -199,7 +197,7 @@ void InitializeMyStuff()
 	double startingX = random(screen_x);
 	double startingY = random(screen_y);
 	Point startingPoint = Point(startingX, startingY);
-	for (int i = 0; i < circles; i++){
+	for (int i = 0; i < GLOBAL_CIRCLES; i++){
 		startingX = random(screen_x);
 		startingY = random(screen_y);
 		startingPoint.setPoint(startingX, startingY);
@@ -215,7 +213,7 @@ void InitializeMyStuff()
 		autos variable list
 		*/
 		Circle *circleToMake = new Circle(startingPoint, random(10, 50), color);
-		shapes.push_back(circleToMake);
+		mShapes.push_back(circleToMake);
 
 		if (startingX == 0){
 			startingX += 1;

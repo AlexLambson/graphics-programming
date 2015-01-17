@@ -1,7 +1,13 @@
-#ifndef GLOBALS_HEADER
-#define GLOBALS_HEADER
+#ifndef _GLOBALS_HEADER_
+#define _GLOBALS_HEADER_
 
-double screen_x = 1600;
-double screen_y = 900;
+#include <vector>
+#include <cstdlib>
+#include "Shape.h"
+using namespace std;
+
+extern double screen_x;
+extern double screen_y;
+extern vector<Shape *> mShapes;
 
 #endif 

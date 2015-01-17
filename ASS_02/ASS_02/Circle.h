@@ -15,6 +15,9 @@ public:
 	void Update();
 	void CheckBounce();
 	void Move();
+	void CheckCollision(Circle *other);
+	//make shape vector array global thren makw this function
+	void CollisionHandler();
 
 	Point GetCenterPoint();
 	Color GetColor();
@@ -22,14 +25,13 @@ public:
 
 	//this function is where velocity is obtained from
 	void setCenterPoint(Point other);
+	void Circle::setCenterPoint(double x, double y);
 	void setColor(Color other);
 	void setRadius(double other);
 
 	void resetVelocity();
 
 private:
-	Point center;
-	Color color;
 	double radius;
 };
 

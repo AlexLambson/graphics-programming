@@ -23,7 +23,7 @@ public:
 	virtual ~Shape();
 	virtual void Draw() = 0;
 	virtual void Update() = 0;
-private:
+protected:
 	Color shapeColor;
 	Point shapePoint;
 };
