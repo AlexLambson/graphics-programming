@@ -80,6 +80,7 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="graphics1.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Shape.cpp" />
   </ItemGroup>
@@ -87,6 +88,7 @@
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Shape.h" />
   </ItemGroup>

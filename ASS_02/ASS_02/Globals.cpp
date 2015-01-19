@@ -2,4 +2,5 @@
 
 double screen_x = 1600;
 double screen_y = 800;
-vector<Shape *> mShapes;
+double bouncefriction = 0.9;
+Physics *physics = new Physics();

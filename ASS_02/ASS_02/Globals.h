@@ -4,10 +4,13 @@
 #include <vector>
 #include <cstdlib>
 #include "Shape.h"
+#include "Physics.h"
+
 using namespace std;
 
 extern double screen_x;
 extern double screen_y;
-extern vector<Shape *> mShapes;
+extern double bouncefriction;
+extern Physics *physics;
 
 #endif 

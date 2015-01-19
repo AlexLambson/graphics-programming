@@ -5,23 +5,25 @@
 
 Circle::Circle(){
 	this->radius = 1.0;
+	this->shapeType = ShapeType::Circle;
 }
 Circle::Circle(Point center, double radius){
 	this->shapePoint = center;
 	this->radius = radius;
 	this->shapeColor = Color();
+	this->shapeType = ShapeType::Circle;
 }
 Circle::Circle(Point center, double radius, Color color){
 	this->shapePoint = center;
 	this->radius = radius;
 	this->shapeColor = color;
+	this->shapeType = ShapeType::Circle;
 }
 
 Circle::~Circle(){
 	//nothing
 }
-void Circle::CheckCollision(Circle *other){
-	bool collided = false;
+bool Circle::Intercepts(Circle *other){
 	double myX, myY, myRadius, otherX, otherY, otherRadius, distanceX, distanceY, radii, myVx, myVy;
 	myRadius = this->GetRadius();
 	myVx = this->GetCenterPoint().GetVelocityX();
@@ -33,30 +35,30 @@ void Circle::CheckCollision(Circle *other){
 	otherX = other->GetCenterPoint().GetX();
 	otherY = other->GetCenterPoint().GetY();
 	otherRadius = other->GetRadius();
-	if (myRadius == otherRadius && myX == otherX && myY == otherY){
-		return;
-	}
+	
 	myX += myVx;
 	myY += myVy;
 	distanceX = myX - otherX;
 	distanceY = myY - otherY;
 	radii = myRadius + otherRadius;
-
 	if ((distanceX * distanceX) + (distanceY * distanceY) < radii * radii){
-		this->shapePoint.setVelocity(myVx * -1.0, myVy * -1.0);
-		other->Update();
+		//this->shapePoint.setVelocity(myVx * -1.0, myVy * -1.0);
+		//other->Update();
+		return true;
 	}
-
+	return false;
 }
 void Circle::CollisionHandler(){
-	for each(Shape *shape in mShapes){
+	//check to see if already collided
+	/*for each(Shape *shape in mShapes){
 		Circle *circle = dynamic_cast<Circle *>(shape);
-		this->CheckCollision(circle);
-	}
+		//this->CheckCollision(circle);
+	}*/
 }
 void Circle::Update(){
+	//move all of this to a physics module
+
 	this->CheckBounce();
-	this->CollisionHandler();
 	//check gravity
 	//check air friction
 	//check ball to ball collisions
@@ -101,16 +103,25 @@ void Circle::CheckBounce(){
 	x += velocity[0];
 	y += velocity[1];
 
+
 	if (x - radius <= 0 && velocity[0] < 0){
+		velocity[0] *= bouncefriction;
+		velocity[1] *= bouncefriction;
 		this->shapePoint.setVelocity(velocity[0] * -1.0, velocity[1]);
 	}
 	if (x + radius >= screen_x && velocity[0] > 0){
+		velocity[0] *= bouncefriction;
+		velocity[1] *= bouncefriction;
 		this->shapePoint.setVelocity(velocity[0] * -1.0, velocity[1]);
 	}
 	if (y - radius <= 0 && velocity[1] < 0){
+		velocity[0] *= bouncefriction;
+		velocity[1] *= bouncefriction;
 		this->shapePoint.setVelocity(velocity[0], velocity[1] * -1.0);
 	}
 	if (y + radius >= screen_y && velocity[1] > 0){
+		velocity[0] *= bouncefriction;
+		velocity[1] *= bouncefriction;
 		this->shapePoint.setVelocity(velocity[0], velocity[1] * -1.0);
 	}
 }

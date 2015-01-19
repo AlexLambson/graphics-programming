@@ -15,7 +15,7 @@ public:
 	void Update();
 	void CheckBounce();
 	void Move();
-	void CheckCollision(Circle *other);
+	bool Intercepts(Circle *other);
 	//make shape vector array global thren makw this function
 	void CollisionHandler();
 
@@ -32,6 +32,7 @@ public:
 	void resetVelocity();
 
 private:
+	int collisionCounter = 0;
 	double radius;
 };
 

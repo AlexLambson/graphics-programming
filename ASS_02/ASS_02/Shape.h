@@ -23,7 +23,14 @@ public:
 	virtual ~Shape();
 	virtual void Draw() = 0;
 	virtual void Update() = 0;
-protected:
+
+	enum ShapeType{
+		Circle
+	};
+
+
+	ShapeType shapeType;
+
 	Color shapeColor;
 	Point shapePoint;
 };

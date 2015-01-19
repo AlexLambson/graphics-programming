@@ -94,11 +94,11 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for each (Shape *shape in mShapes)
-	{
-		//shape->OnScreen(screen_x, screen_y);
-		shape->Update();
-	}
+	physics->HandleCollisions();
+	physics->UpdateObjects();
+	physics->ApplyGravity();
+	physics->ApplyAirFriction();
+	physics->UpdateObjects();
 
 	glColor3d(0,0,0);
 
@@ -160,6 +160,7 @@ void mouse(int mouse_button, int state, int x, int y)
 	}
 	if (mouse_button == GLUT_LEFT_BUTTON && state == GLUT_UP) 
 	{
+		physics->FindMouseCollisions(x, y, screen_x, screen_y);
 	}
 	if (mouse_button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) 
 	{
@@ -187,7 +188,7 @@ double random(){
 	random /= double(RANDOM_VELOCITY_MAX);
 	//now we divide by a scale down factor if smaller numbers are needed
 	random /= 2;
-	random -= 0.25;
+	random -= 0.2;
 	return random;
 }
 // Your initialization code goes here.
@@ -213,7 +214,7 @@ void InitializeMyStuff()
 		autos variable list
 		*/
 		Circle *circleToMake = new Circle(startingPoint, random(10, 50), color);
-		mShapes.push_back(circleToMake);
+		physics->Collidables.push_back(circleToMake);
 
 		if (startingX == 0){
 			startingX += 1;
