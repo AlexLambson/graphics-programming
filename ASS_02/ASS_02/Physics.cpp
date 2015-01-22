@@ -36,12 +36,25 @@ void Physics::HandleCollisions(){
 					vector<double> myV = myPoint.GetVelocity();
 					vector<double> otherV = otherPoint.GetVelocity();
 
-					myV[0] *= this->BounceFriction;
-					myV[1] *= this->BounceFriction;
-					otherV[0] *= this->BounceFriction;
-					otherV[1] *= this->BounceFriction;
+					/*myV[0] *= -1.0;// this->BounceFriction;
+					myV[1] *= -1.0;// this->BounceFriction;
+					otherV[0] *= -1.0;// this->BounceFriction;
+					otherV[1] *= -1.0;//this->BounceFriction;*/
 
-
+					if (myV[0] < 0 && otherV[0] > 0){
+						myV[0] *= -1.0;
+						otherV[0] *= -1.0;
+					}
+					else{
+						myV[0] *= -1.0;
+					}
+					if (myV[1] < 0 && otherV[1] > 0){
+						myV[1] *= -1.0;
+						otherV[1] *= -1.0;
+					}
+					else {
+						myV[1] *= -1.0;
+					}
 					myPoint.setVelocity(myV[0], myV[1]);
 					otherPoint.setVelocity(otherV[0], otherV[1]);
 

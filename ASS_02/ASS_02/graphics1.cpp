@@ -26,6 +26,7 @@ using namespace std;
 const int GLOBAL_CIRCLES = 10;
 const double RANDOM_VELOCITY_MAX = 10000;
 const int MAX_FRAME_RATE = 120;
+int GlobalFrameCount = 0;
 
 
 
@@ -84,6 +85,17 @@ void DrawText(double x, double y, char *string)
 }
 
 
+void timer(int flag) {
+	int drawStartTime = clock();
+	glutPostRedisplay();
+	int drawEndTime = clock();
+
+	double delayToNextFrame = (CLOCKS_PER_SEC / MAX_FRAME_RATE) - (drawEndTime - drawStartTime);
+	delayToNextFrame = floor(delayToNextFrame + 0.5);
+	delayToNextFrame < 0 ? delayToNextFrame = 0 : NULL;
+
+	glutTimerFunc(delayToNextFrame, timer, 0);
+}
 //
 // GLUT callback functions
 //
@@ -109,8 +121,8 @@ void display(void)
 	then put glutPostRedisplay inside of it.
 	*/
 	glutPostRedisplay();
+	//timer(1);
 }
-
 
 // This callback function gets called by the Glut
 // system whenever a key is pressed.
@@ -187,8 +199,8 @@ double random(){
 	//larger num for accuracy adds more accuracy, duh.
 	random /= double(RANDOM_VELOCITY_MAX);
 	//now we divide by a scale down factor if smaller numbers are needed
-	random /= 2;
-	random -= 0.2;
+	//random /= 2;
+	random -= 0.5;
 	return random;
 }
 // Your initialization code goes here.

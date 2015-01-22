@@ -32,8 +32,8 @@ bool Circle::Intercepts(Circle *other){
 	myX = this->GetCenterPoint().GetX();// +myVx;
 	myY = this->GetCenterPoint().GetY();// +myVy;
 	//need their position
-	otherX = other->GetCenterPoint().GetX();
-	otherY = other->GetCenterPoint().GetY();
+	otherX = other->GetCenterPoint().GetX() + other->GetCenterPoint().GetVelocityX();
+	otherY = other->GetCenterPoint().GetY() + other->GetCenterPoint().GetVelocityY();
 	otherRadius = other->GetRadius();
 	
 	myX += myVx;
@@ -44,7 +44,14 @@ bool Circle::Intercepts(Circle *other){
 	if ((distanceX * distanceX) + (distanceY * distanceY) < radii * radii){
 		//this->shapePoint.setVelocity(myVx * -1.0, myVy * -1.0);
 		//other->Update();
+		if (collisionCounter > 100){
+			return false;
+		}
+		this->collisionCounter++;
 		return true;
+	}
+	if (this->collisionCounter > 0){
+		this->collisionCounter -= 1;
 	}
 	return false;
 }
@@ -65,8 +72,39 @@ void Circle::Update(){
 
 	//Make a move function, then call it.
 	this->Move();
-
+	this->modifyColors();
 	this->Draw();
+}
+void Circle::modifyColors(){
+	/*this->colorcount++;
+	if (!(this->colorcount % 2 == 0)){
+		return;
+	}
+	if (this->colorcount > 600){
+		this->colorcount = 0;
+	}*/
+	vector<double> old = this->GetColor().GetColors();
+	double dx = this->GetCenterPoint().GetVelocityX() / 5;
+	double dy = this->GetCenterPoint().GetVelocityY() / 5;
+	double combined = (dx + dy) / 2.0;
+	double red, green, blue;
+	red = old[0];
+	green = old[1];
+	blue = old[2];
+	if ((red + dx < 0.0) || (red + dx >= 0.9)){
+		dx *= -1.0;
+	}
+	if ((green + dy < 0.0) || (green + dy >= 0.9)){
+		dy *= -1.0;
+	}
+	if (blue + combined < 0.0 || blue + combined >= 0.9){
+		combined *= -1.0;
+	}
+	red += dx;
+	green += dy;
+	blue += combined;
+	Color newcolor = Color(red, green, blue);
+	this->setColor(newcolor);
 }
 void Circle::Draw(){
 	double centerX = this->shapePoint.GetX();
@@ -153,4 +191,13 @@ void Circle::setRadius(double other){
 
 void Circle::resetVelocity(){
 	this->shapePoint.setVelocity(0.0, 0.0);
+}
+double Circle::getnextx(){
+	return this->GetCenterPoint().GetX() + this->GetCenterPoint().GetVelocityX();
+}
+double Circle::getnexty(){ 
+	return this->GetCenterPoint().GetY() + this->GetCenterPoint().GetVelocityY(); 
+}
+double Circle::getradius(){
+	return this->radius;
 }

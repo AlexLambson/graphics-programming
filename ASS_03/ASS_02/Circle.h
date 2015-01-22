@@ -19,6 +19,9 @@ public:
 	//make shape vector array global thren makw this function
 	void CollisionHandler();
 
+	double getnextx();
+	double getnexty();
+
 	Point GetCenterPoint();
 	Color GetColor();
 	double GetRadius();
@@ -28,10 +31,14 @@ public:
 	void Circle::setCenterPoint(double x, double y);
 	void setColor(Color other);
 	void setRadius(double other);
+	double getradius();
 
 	void resetVelocity();
 
+	void modifyColors();
+
 private:
+	int colorcount = 0;
 	int collisionCounter = 0;
 	double radius;
 };

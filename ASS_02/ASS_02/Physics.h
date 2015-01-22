@@ -21,5 +21,5 @@ public:
 
 	double Gravity = 0.0001;
 	double BounceFriction = 0.85;
-	double AirFriction = 0.99999999999;
+	double AirFriction = 0.9999999999999;
 };

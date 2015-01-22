@@ -23,6 +23,9 @@ public:
 	virtual ~Shape();
 	virtual void Draw() = 0;
 	virtual void Update() = 0;
+	virtual double getnextx() = 0;
+	virtual double getnexty() = 0;
+	virtual double getradius() = 0;
 
 	enum ShapeType{
 		Circle

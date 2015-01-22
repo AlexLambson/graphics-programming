@@ -82,7 +82,27 @@ void DrawText(double x, double y, char *string)
 
     glDisable(GL_BLEND);
 }
-
+double random(int end){
+	return (rand() % end) * 1.0;
+}
+double random(int start, int end){
+	return (rand() % end + start) * 1.0;
+}
+double random(int start, int end, bool percentage){
+	return ((rand() % end + start) * 1.0) / end;
+}
+//Gets a number between 0-1 and offsets it if desired, set scaleDown to 1 if you don't want scaling
+double random(){
+	//get a number between 0 and end (10,000 in this case)
+	double random = double(rand() % int(RANDOM_VELOCITY_MAX));
+	//convert the number from 0-10,000, to 0-1.
+	//larger num for accuracy adds more accuracy, duh.
+	random /= double(RANDOM_VELOCITY_MAX);
+	//now we divide by a scale down factor if smaller numbers are needed
+	random /= 5;
+	random -= 0.25;
+	return random;
+}
 
 //
 // GLUT callback functions
@@ -116,13 +136,41 @@ void display(void)
 // system whenever a key is pressed.
 void keyboard(unsigned char c, int x, int y)
 {
+	double startingX = random(screen_x);
+	double startingY = screen_y + 100;
+	Point startingPoint = Point();
+	startingPoint.setPoint(startingX, startingY);
+	double v = random(0, 1000, true);
+	startingPoint.setVelocity(random(), -0.9);
+	/*
+	TODO: Ask Bart why it will not display colors
+	*/
+	double red = random(0, 1000, true);
+	double green = random(0, 1000, true);
+	double blue = random(0, 1000, true);
+	if (red >= 0.9){
+		red -= 0.9;
+	}
+	if (green >= 0.9){
+		green -= 0.9;
+	}
+	if (blue >= 0.9){
+		blue -= 0.9;
+	}
+	Color color = Color(red, green, blue);
+	/*
+	TODO: Ask Bart why my inheritence is all weird.
+	Place a break point at shapes.push_back in order to see it in the
+	autos variable list
+	*/
+	Circle *circleToMake = new Circle(startingPoint, random(10, 50), color);
 	switch (c) 
 	{
 		case 27: // escape character means to quit the program
 			exit(0);
 			break;
 		case 'b':
-			// do something when 'b' character is hit.
+			physics->Collidables.push_back(circleToMake);
 			break;
 		default:
 			return; // if we don't care, return without glutPostRedisplay()
@@ -168,29 +216,15 @@ void mouse(int mouse_button, int state, int x, int y)
 	if (mouse_button == GLUT_MIDDLE_BUTTON && state == GLUT_UP) 
 	{
 	}
+	if (mouse_button == GLUT_RIGHT_BUTTON && state == GLUT_UP){
+		for each(Shape * shape in physics->Collidables){
+			shape->shapePoint.setVelocityX(random());
+			shape->shapePoint.setVelocityY(0.7);
+		}
+	}
 	glutPostRedisplay();
 }
-double random(int end){
-	return (rand() % end) * 1.0;
-}
-double random(int start, int end){
-	return (rand() % end + start) * 1.0;
-}
-double random(int start, int end, bool percentage){
-	return ((rand() % end + start) * 1.0) / end;
-}
-//Gets a number between 0-1 and offsets it if desired, set scaleDown to 1 if you don't want scaling
-double random(){
-	//get a number between 0 and end (10,000 in this case)
-	double random = double(rand() % int(RANDOM_VELOCITY_MAX));
-	//convert the number from 0-10,000, to 0-1.
-	//larger num for accuracy adds more accuracy, duh.
-	random /= double(RANDOM_VELOCITY_MAX);
-	//now we divide by a scale down factor if smaller numbers are needed
-	random /= 2;
-	random -= 0.2;
-	return random;
-}
+
 // Your initialization code goes here.
 void InitializeMyStuff()
 {
