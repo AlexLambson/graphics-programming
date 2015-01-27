@@ -1,6 +1,6 @@
 #include "Physics.h"
 #include "Circle.h"
-const double COLLISION_FRICTION = 0.85;
+const double COLLISION_FRICTION = 0.99;
 struct vectortype
 {
 	double x;
@@ -59,7 +59,7 @@ void Physics::FindMouseCollisions(int mouseX, int mouseY, double screenX, double
 	mouseY *= 1.0;
 	mouseY = screenY - mouseY;
 	Point point = Point(mouseX, mouseY);
-	Circle *mouse = new Circle(point, 10.0);
+	Circle *mouse = new Circle(point, 40.0);
 	for each(Shape *shape in this->Collidables){
 		Circle *circle = dynamic_cast<Circle *>(shape);
 		if (circle->Intercepts(mouse)){

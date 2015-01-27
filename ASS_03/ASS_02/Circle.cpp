@@ -25,16 +25,16 @@ Circle::~Circle(){
 }
 bool Circle::Intercepts(Circle *other){
 	double myX, myY, myRadius, otherX, otherY, otherRadius, distanceX, distanceY, radii, myVx, myVy;
-	myRadius = this->GetRadius();
-	myVx = this->GetCenterPoint().GetVelocityX();
-	myVy = this->GetCenterPoint().GetVelocityY();
+	myRadius = this->radius;
+	myVx = this->shapePoint.GetVelocityX();
+	myVy = this->shapePoint.GetVelocityY();
 	//add velocity to see where we WILL be
-	myX = this->GetCenterPoint().GetX();// +myVx;
-	myY = this->GetCenterPoint().GetY();// +myVy;
+	myX = this->shapePoint.GetX();// +myVx;
+	myY = this->shapePoint.GetY();// +myVy;
 	//need their position
-	otherX = other->GetCenterPoint().GetX() + other->GetCenterPoint().GetVelocityX();
-	otherY = other->GetCenterPoint().GetY() + other->GetCenterPoint().GetVelocityY();
-	otherRadius = other->GetRadius();
+	otherX = other->shapePoint.GetX();
+	otherY = other->shapePoint.GetY();
+	otherRadius = other->radius;
 	
 	myX += myVx;
 	myY += myVy;
@@ -44,14 +44,7 @@ bool Circle::Intercepts(Circle *other){
 	if ((distanceX * distanceX) + (distanceY * distanceY) < radii * radii){
 		//this->shapePoint.setVelocity(myVx * -1.0, myVy * -1.0);
 		//other->Update();
-		if (collisionCounter > 100){
-			return false;
-		}
-		this->collisionCounter++;
 		return true;
-	}
-	if (this->collisionCounter > 0){
-		this->collisionCounter -= 1;
 	}
 	return false;
 }
@@ -91,13 +84,13 @@ void Circle::modifyColors(){
 	red = old[0];
 	green = old[1];
 	blue = old[2];
-	if ((red + dx < 0.0) || (red + dx >= 0.9)){
+	if ((red + dx < 0.0) || (red + dx >= 0.8)){
 		dx *= -1.0;
 	}
-	if ((green + dy < 0.0) || (green + dy >= 0.9)){
+	if ((green + dy < 0.0) || (green + dy >= 0.6)){
 		dy *= -1.0;
 	}
-	if (blue + combined < 0.0 || blue + combined >= 0.9){
+	if (blue + combined < 0.0 || blue + combined >= 0.8){
 		combined *= -1.0;
 	}
 	red += dx;

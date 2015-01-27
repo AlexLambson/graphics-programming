@@ -23,9 +23,10 @@ using namespace std;
 
 
 // Global Variables (Only what you need!)
-const int GLOBAL_CIRCLES = 10;
+const int GLOBAL_CIRCLES = 4;
 const double RANDOM_VELOCITY_MAX = 10000;
 const int MAX_FRAME_RATE = 120;
+int strobe = 0;
 
 
 
@@ -108,6 +109,9 @@ double random(){
 // GLUT callback functions
 //
 
+void swapBG(){
+	return;
+}
 // This callback function gets called by the Glut
 // system whenever it decides things need to be redrawn.
 void display(void)
@@ -115,7 +119,6 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	physics->HandleCollisions();
-	physics->UpdateObjects();
 	physics->ApplyGravity();
 	physics->ApplyAirFriction();
 	physics->UpdateObjects();
@@ -123,14 +126,17 @@ void display(void)
 	glColor3d(0,0,0);
 
 	glutSwapBuffers();
-
+	if (strobe % 60 == 0){
+		swapBG();
+		strobe = 0;
+	}
 	/*
 	TODO: Limit fps. write a timer function
 	then put glutPostRedisplay inside of it.
 	*/
+	strobe += 1;
 	glutPostRedisplay();
 }
-
 
 // This callback function gets called by the Glut
 // system whenever a key is pressed.
