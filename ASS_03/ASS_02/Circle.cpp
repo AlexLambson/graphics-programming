@@ -32,8 +32,8 @@ bool Circle::Intercepts(Circle *other){
 	myX = this->shapePoint.GetX();// +myVx;
 	myY = this->shapePoint.GetY();// +myVy;
 	//need their position
-	otherX = other->shapePoint.GetX();
-	otherY = other->shapePoint.GetY();
+	otherX = other->shapePoint.GetX() + other->shapePoint.GetVelocityX();
+	otherY = other->shapePoint.GetY() + other->shapePoint.GetVelocityY();
 	otherRadius = other->radius;
 	
 	myX += myVx;
