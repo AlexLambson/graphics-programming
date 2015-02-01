@@ -1,6 +1,6 @@
 #include "Physics.h"
 #include "Circle.h"
-const double COLLISION_FRICTION = 0.99;
+const double COLLISION_FRICTION = bouncefriction;
 struct vectortype
 {
 	double x;
@@ -68,16 +68,16 @@ void Physics::FindMouseCollisions(int mouseX, int mouseY, double screenX, double
 			double x = newPoint.GetX();
 			double y = newPoint.GetY();
 			if (x > mouseX){
-				v[0] += 1.0;
+				v[0] += 1.5;
 			}
 			else{
-				v[0] -= 1.0;
+				v[0] -= 1.5;
 			}
 			if (y > mouseY){
-				v[1] += 1.0;
+				v[1] += 1.5;
 			}
 			else {
-				v[1] -= 1.0;
+				v[1] -= 1.5;
 			}
 			newPoint.setVelocity(v[0], v[1]);
 			circle->setCenterPoint(newPoint);

@@ -45,4 +45,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="particles.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="colors.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="forces.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

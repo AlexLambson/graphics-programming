@@ -21,7 +21,6 @@ public:
 
 	vector<Shape *> Collidables;
 
-	double Gravity = 0.001;
-	double BounceFriction = 0.935;
+	double Gravity = 0.000001;
 	double AirFriction = 0.99999999999;
 };

@@ -1,0 +1,9 @@
+This assignment is going to be about modeling in world coordinates instead of screen coordinates
+OpenGL will scale things if the screen size changes
+
+Reshape is used to reset the screen size. It is called right when the program runs
+Resets the screenx screeny variables. 
+
+We can tell it what the viewport and world can be using reshape
+
+Make multiple viewports in display

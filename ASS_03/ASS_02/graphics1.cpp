@@ -27,6 +27,7 @@ const int GLOBAL_CIRCLES = 4;
 const double RANDOM_VELOCITY_MAX = 10000;
 const int MAX_FRAME_RATE = 120;
 int strobe = 0;
+double MAX_RADIUS = 50.0;
 
 
 
@@ -84,7 +85,7 @@ void DrawText(double x, double y, char *string)
     glDisable(GL_BLEND);
 }
 double random(int end){
-	return (rand() % end) * 1.0;
+	return (rand() % (end - (int)MAX_RADIUS * 2)) + MAX_RADIUS;
 }
 double random(int start, int end){
 	return (rand() % end + start) * 1.0;
@@ -225,7 +226,7 @@ void mouse(int mouse_button, int state, int x, int y)
 	if (mouse_button == GLUT_RIGHT_BUTTON && state == GLUT_UP){
 		for each(Shape * shape in physics->Collidables){
 			shape->shapePoint.setVelocityX(random());
-			shape->shapePoint.setVelocityY(0.7);
+			shape->shapePoint.setVelocityY(1.2);
 		}
 	}
 	glutPostRedisplay();
@@ -253,7 +254,7 @@ void InitializeMyStuff()
 		Place a break point at shapes.push_back in order to see it in the 
 		autos variable list
 		*/
-		Circle *circleToMake = new Circle(startingPoint, random(10, 50), color);
+		Circle *circleToMake = new Circle(startingPoint, random(10, MAX_RADIUS), color);
 		physics->Collidables.push_back(circleToMake);
 
 		if (startingX == 0){

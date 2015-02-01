@@ -88,6 +88,11 @@
     <ClInclude Include="..\..\..\..\Downloads\StarterSprings\del\particle.h" />
     <ClInclude Include="..\..\..\..\Downloads\StarterSprings\del\vector.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="colors.txt" />
+    <Text Include="particles.txt" />
+    <Text Include="forces.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
