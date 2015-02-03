@@ -7,3 +7,16 @@ Resets the screenx screeny variables.
 We can tell it what the viewport and world can be using reshape
 
 Make multiple viewports in display
+
+
+Maze. Make an array of cells Array[Array[Cells]] all inside maze class
+
+Maze will use world coordinates so that each cell is a position. eg, maze[2][3] will be world position 2,3
+GET WHOLE GRID SHOWING BEFORE REMOVING WALLS!
+
+
+making maze{
+	all walls true;
+	all cells visited false;
+
+}

@@ -15,11 +15,13 @@
 #include <cstring>
 #include <cstdlib>
 #include "glut.h"
+#include "Maze.h"
 
 
 // Global Variables (Only what you need!)
 double screen_x = 700;
 double screen_y = 500;
+Maze gMaze;
 
 
 // 
@@ -87,23 +89,26 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	//globalMaze.Draw();
+	gMaze.Draw();
 	// Test lines that draw all three shapes and some text.
 	// Delete these when you get your code working.
-	glColor3d(0,0,1);
-	double X[3] = { 20, 50, 100 };
+	//glColor3d(0,0,1);
+	/*double X[3] = { 20, 50, 100 };
 	double Y[3] = { 10, 100, 40 };
 	double x = 50;
 	double y = 80;
 
 	glBegin(GL_POINTS);
-	for(int i = 1; i < 1000; i++){
+	for(int i = 1; i < 10000000; i++){
 		glVertex2d(x, y);
 		int r = rand() % 3;
 		x = (x + X[r]) / 2.0;
 		y = (y + Y[r]) / 2.0;
-	}
-	glEnd();
+	}*/
+	//glEnd();
 	glutSwapBuffers();
+	glutPostRedisplay();
 }
 
 
@@ -141,9 +146,8 @@ void reshape(int w, int h)
 	// Set the projection mode to 2D orthographic, and set the world coordinates:
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, 100, 0, 100);
+	gluOrtho2D(0, 5, 0, 4);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 // This callback function gets called by the Glut
@@ -168,6 +172,7 @@ void mouse(int mouse_button, int state, int x, int y)
 // Your initialization code goes here.
 void InitializeMyStuff()
 {
+	gMaze = Maze(5, 4);
 }
 
 
