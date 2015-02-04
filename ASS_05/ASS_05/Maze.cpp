@@ -38,7 +38,7 @@ void Maze::Cell::Draw(){
 	x = this->position.xPos;
 	y = this->position.yPos;
 
-	glBegin(GL_LINE);
+	glBegin(GL_LINES);
 
 	glVertex2i(x, y);
 	glVertex2i(x + 1, y);
