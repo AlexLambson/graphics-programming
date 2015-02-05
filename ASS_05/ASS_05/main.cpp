@@ -14,6 +14,9 @@
 #include <cmath>
 #include <cstring>
 #include <cstdlib>
+#include <iostream>
+#include <random>
+#include <time.h>
 #include "glut.h"
 #include "Maze.h"
 
@@ -22,6 +25,8 @@
 double screen_x = 700;
 double screen_y = 500;
 Maze gMaze;
+int mazeX = 5;
+int mazeY = 4;
 
 
 // 
@@ -146,7 +151,7 @@ void reshape(int w, int h)
 	// Set the projection mode to 2D orthographic, and set the world coordinates:
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, 5, 0, 4);
+	gluOrtho2D(-.5, mazeX + .5, -.5, mazeY + .5);
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -172,13 +177,18 @@ void mouse(int mouse_button, int state, int x, int y)
 // Your initialization code goes here.
 void InitializeMyStuff()
 {
-	gMaze = Maze(5, 4);
+	gMaze = Maze(mazeX, mazeY);
 }
 
 
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
+	//srand(time(NULL));
+	std::cout << "Enter maze size as 'x y':     ";
+	std::cin >> mazeX >> mazeY;
+	screen_x = 100 * mazeX;
+	screen_y = 100 * mazeY;
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(screen_x, screen_y);

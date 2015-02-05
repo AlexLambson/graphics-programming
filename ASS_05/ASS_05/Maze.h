@@ -1,7 +1,20 @@
 #include <cstdlib>
 #include <vector>
+#include <random>
 #include <glut.h>
 
+
+struct MazeSize{
+	int sizeX, sizeY;
+};
+struct Position{
+	int xPos, yPos;
+};
+struct Unvisited{
+	std::vector<int> xPos;
+	std::vector<int> yPos;
+	bool unvisitedNeighbor = false;
+};
 class Maze{
 	public:
 		Maze();
@@ -9,8 +22,8 @@ class Maze{
 		void Draw(); //draw all cells. tell cells to draw themselves
 		void createMaze(int x, int y);
 		void removeWalls(int x, int y); //initially 0, 0.
+		MazeSize getMazeSize();
 		/*
-	
 		marks cell visited;
 		mcells[i][j].visited = true;
 
@@ -25,6 +38,9 @@ class Maze{
 		}
 		*/
 	private:
+		void setMazeSize(int sizeX, int sizeY);
+		Unvisited unvisitedNeighbors(int myX, int myY);
+		MazeSize mazeSize;
 		bool startCell, endCell; 
 		class Cell{
 			public:
@@ -36,10 +52,6 @@ class Maze{
 				//wall is on or off
 				bool left, bottom, right, top;
 				bool visited;
-
-				struct Position{
-					int xPos, yPos;
-				};
 				Position position;
 		};
 		std::vector<std::vector<Cell>> mCells;

@@ -20,3 +20,7 @@ making maze{
 	all cells visited false;
 
 }
+
+debugging strategies
+	- do it on a small maze
+	- do not use srand() until done debugging
