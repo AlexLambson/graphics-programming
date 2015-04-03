@@ -4,7 +4,7 @@ using namespace std;
 #include "graphics.h"
 
 enum PieceType{
-	ROOK,
+	ROOK = 100,
 	PAWN,
 	KING,
 	QUEEN,
@@ -29,15 +29,17 @@ class Piece
 {
 public:
 	Piece();
-	Piece(int x, int y, int z, char filename[], PieceColor color);
+	Piece(int x, int y, int z, unsigned int pieceType, PieceColor color, GLuint id);
 	void Draw();
 	void setPosition(int x, int y, int z);
 	void setRotation(int x, int y, int z);
 	Position getRotation();
 	Position getPosition();
 	GLfloat * getColor();
+	GLuint glId;
+	unsigned int mPieceType;
 private:
-	char* mPieceType;
+	void initGL();
 	Position mPosition;
 	PieceColor mColor;
 	bool isNull;

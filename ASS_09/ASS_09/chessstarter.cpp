@@ -27,20 +27,23 @@ GLfloat greenMaterial[] = { 0.1, 0.7, 0.4, 1.0 };
 GLfloat brightGreenMaterial[] = { 0.1, 0.9, 0.1, 1.0 };
 GLfloat blueMaterial[] = { 0.1, 0.2, 0.7, 1.0 };
 GLfloat whiteMaterial[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat blackMaterial[] = { 0.0, 0.0, 0.0, 1.0 };
+GLfloat blackMaterial[] = { 0.1, 0.1, 0.1, 1.0 };
 GLfloat grayMaterial[] = { 0.3, 0.3, 0.3, 1.0 };
 GLfloat creamMaterial[] = {1.0, 0.8, 0.7, 1.0};
 GLfloat brownMaterial[] = { 0.7274, 0.5215, 0.3764 };
+unsigned int BOARD_GL_ID = 201;
 int CELL_SIZE = 1000;
 int BOARD_HEIGHT = CELL_SIZE / 4;
 double screen_x = 1280;
 double screen_y = 720;
 Board gBoard = Board();
 clock_t startTime = clock();
+GLuint part;
 
 //white is first 16. order goes pawns first
 Piece* pieces = new Piece[32];
-char* backRow[] = { "ROOK.POL", "KNIGHT.POL", "BISHOP.POL", "QUEEN.POL", "KING.POL", "BISHOP.POL", "KNIGHT.POL", "ROOK.POL"};
+//enum pieceNames{ PAWN = 100, ROOK, KNIGHT, BISHOP, QUEEN, KING };
+unsigned int backRow[] = { ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK};
 
 // Outputs a string of text at the specified location.
 void text_output(double x, double y, char *string)
@@ -169,26 +172,21 @@ void animate(){
 	double pZ;
 	double pX;
 	if (Time <= 2.5){
-		glPushMatrix();
 		position = pieces[piece1ID].getPosition();
 		double static zStart = position.z;
 		pZ = 0;
 		RatioSet(Time, 1, 2, pZ, zStart, zStart + (2 * CELL_SIZE));
 		pieces[piece1ID].setPosition(position.x, position.y, pZ);
-		glPopMatrix();
 	}
 	if (Time >= 3 && Time <= 4.5){
-		glPushMatrix();
 		position = pieces[piece2ID].getPosition();
 		double static zStart2 = position.z;
 		pZ = 0;
 		RatioSet(Time, 3, 4, pZ, zStart2, zStart2 - (2 * CELL_SIZE));
 		pieces[piece2ID].setPosition(position.x, position.y, pZ);
-		glPopMatrix();
 	}
 	//white queen
 	if ((Time >= 4 && Time <= 5.5) || (Time >= 8 && Time <= 9.5) || (Time >= 17 && Time <= 18.5)){
-		glPushMatrix();
 		position = pieces[piece35ID].getPosition();
 		double static zStart3 = position.z;
 		double zStart5 = zStart3 + (2 * CELL_SIZE);
@@ -209,11 +207,9 @@ void animate(){
 			RatioSet(Time, 17, 18, pX, xStart7, xStart7 - (3 * CELL_SIZE));
 		}
 		pieces[piece35ID].setPosition(pX, position.y, queenZ);
-		glPopMatrix();
 	}
 	//black bishop
 	if ((Time >= 6 && Time <= 7.5) || (Time >= 8 && Time <= 14.5)){
-		glPushMatrix();
 		position = pieces[piece4ID].getPosition();
 		double static zStart4 = position.z;
 		double static xStart4 = position.x;
@@ -231,21 +227,17 @@ void animate(){
 			pieces[piece4ID].setRotation(0, rotationY, rotationZ);
 		}
 		pieces[piece4ID].setPosition(pX, bishopY, pZ);
-		glPopMatrix();
 	}
 	//black queen
 	if (Time >= 14 && Time <= 17.5){
-		glPushMatrix();
 		position = pieces[piece6ID].getPosition();
 		double static zStart6 = position.z;
 		pZ = 0;
 		RatioSet(Time, 14.5, 16.5, pZ, zStart6, zStart6 - (2 * CELL_SIZE));
 		pieces[piece6ID].setPosition(position.x, position.y, pZ);
-		glPopMatrix();
 	}
 	//black king
 	if (Time >= 18 && Time <= 19.5){
-		glPopMatrix();
 		double kingY = BOARD_HEIGHT;
 		position = pieces[piece7ID].getPosition();
 		if (Time >= 18){
@@ -255,7 +247,6 @@ void animate(){
 			RatioSet(Time, 18.5, 19, kingY, BOARD_HEIGHT + (CELL_SIZE / 2), BOARD_HEIGHT);
 		}
 		pieces[piece7ID].setPosition(position.x, kingY, position.z);
-		glPushMatrix();
 	}
 
 	//camera
@@ -359,7 +350,8 @@ void display(void)
 		glPopMatrix();
 	}*/
 	animate();
-	gBoard.Draw();
+	//gBoard.Draw();
+	glCallList(BOARD_GL_ID);
 	for (int i = 0; i < 32; i++){
 		pieces[i].Draw();
 	}
@@ -431,29 +423,49 @@ void mouse(int mouse_button, int state, int x, int y)
 	glutPostRedisplay();
 }
 void MakePieces(){
+	
+	glNewList(PAWN, GL_COMPILE);
+	DrawPiece("PAWN.POL");
+	glEndList();
+	glNewList(ROOK, GL_COMPILE);
+	DrawPiece("ROOK.POL");
+	glEndList();
+	glNewList(KNIGHT, GL_COMPILE);
+	DrawPiece("KNIGHT.POL");
+	glEndList();
+	glNewList(BISHOP, GL_COMPILE);
+	DrawPiece("BISHOP.POL");
+	glEndList();
+	glNewList(KING, GL_COMPILE);
+	DrawPiece("KING.POL");
+	glEndList();
+	glNewList(QUEEN, GL_COMPILE);
+	DrawPiece("QUEEN.POL");
+	glEndList();
+	glNewList(BOARD_GL_ID, GL_COMPILE);
+	gBoard.Draw();
+	glEndList();
+
 	int piecesPosition = 0;
 	for (int x = CELL_SIZE; x <= CELL_SIZE * 8; x += CELL_SIZE)
 	{
-		Piece pawn = Piece(x, BOARD_HEIGHT, CELL_SIZE * 2, "PAWN.POL", CREAM);
-		if (x == CELL_SIZE){
-			//pawn = Piece(x, BOARD_HEIGHT, CELL_SIZE * 2, "PAWN.POL", RED);
-		}
+		Piece pawn = Piece(x, BOARD_HEIGHT, CELL_SIZE * 2, PAWN, RED, part);
 		pieces[piecesPosition] = pawn;
 		piecesPosition++;
 	}
 	for (int x = CELL_SIZE; x <= CELL_SIZE * 8; x += CELL_SIZE){
-		Piece piece = Piece(x, BOARD_HEIGHT, CELL_SIZE, backRow[piecesPosition - 8], CREAM);
+		Piece piece = Piece(x, BOARD_HEIGHT, CELL_SIZE, backRow[piecesPosition - 8], RED, part);
 		pieces[piecesPosition] = piece;
 		piecesPosition++;
 	}
 	for (int x = CELL_SIZE; x <= CELL_SIZE * 8; x += CELL_SIZE)
 	{
-		Piece pawn = Piece(x, BOARD_HEIGHT, CELL_SIZE * 7, "PAWN.POL", GRAY);
+		Piece pawn = Piece(x, BOARD_HEIGHT, CELL_SIZE * 7, PAWN, BLUE, part);
 		pieces[piecesPosition] = pawn;
 		piecesPosition++;
 	}
 	for (int x = CELL_SIZE; x <= CELL_SIZE * 8; x += CELL_SIZE){
-		Piece piece = Piece(x, BOARD_HEIGHT, CELL_SIZE * 8, backRow[piecesPosition - 24], GRAY);
+		Piece piece = Piece(x, BOARD_HEIGHT, CELL_SIZE * 8, backRow[piecesPosition - 24], BLUE, part);
 		pieces[piecesPosition] = piece;
 		piecesPosition++;
 	}

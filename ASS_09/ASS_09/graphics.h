@@ -20,3 +20,4 @@ extern GLfloat creamMaterial[];
 extern GLfloat brownMaterial[];
 extern int BOARD_HEIGHT;
 extern int CELL_SIZE;
+extern unsigned int BOARD_GL_ID;

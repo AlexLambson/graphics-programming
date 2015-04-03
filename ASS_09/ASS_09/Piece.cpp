@@ -4,12 +4,16 @@ Piece::Piece(){
 	this->setPosition(0, 0, 0);
 	this->isNull = true;
 }
-Piece::Piece(int x, int y, int z, char filename[], PieceColor color){
+Piece::Piece(int x, int y, int z, unsigned int pieceType, PieceColor color, GLuint glId){
 	this->setPosition(x, y, z);
-	this->mPieceType = filename;
+	this->mPieceType = pieceType;
 	this->mColor = color;
 	this->isNull = false;
 	this->setRotation(0, 0, 0);
+	this->glId = glId;
+}
+void Piece::initGL(){
+
 }
 void Piece::setPosition(int x, int y, int z){
 	this->mPosition.x = x;
@@ -37,6 +41,7 @@ void Piece::Draw(){
 	if (this->mPosition.y <= -30000){
 		this->isNull = true;
 	}
+
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, this->getColor());
 	//rotate
 	//move
@@ -45,9 +50,11 @@ void Piece::Draw(){
 	glRotated(this->rotation.x, 1, 0, 0);
 	glRotated(this->rotation.y, 0, 1, 0);
 	glRotated(this->rotation.z, 0, 0, 1);
-	DrawPiece(this->mPieceType);
+	glCallList(this->mPieceType);
+	//DrawPiece(this->mPieceType);
 	glPopMatrix();
 }
+
 GLfloat* Piece::getColor(){
 	GLfloat* color;
 	switch (this->mColor)
