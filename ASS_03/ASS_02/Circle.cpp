@@ -65,10 +65,10 @@ void Circle::Update(){
 
 	//Make a move function, then call it.
 	this->Move();
-	this->modifyColors();
+	//this->modifyColors();
 	this->Draw();
 }
-void Circle::modifyColors(){
+void Circle::modifyColors(Circle &other){
 	/*this->colorcount++;
 	if (!(this->colorcount % 2 == 0)){
 		return;
@@ -76,6 +76,7 @@ void Circle::modifyColors(){
 	if (this->colorcount > 600){
 		this->colorcount = 0;
 	}*/
+	/*
 	vector<double> old = this->GetColor().GetColors();
 	double dx = this->GetCenterPoint().GetVelocityX() / 5;
 	double dy = this->GetCenterPoint().GetVelocityY() / 5;
@@ -96,8 +97,9 @@ void Circle::modifyColors(){
 	red += dx;
 	green += dy;
 	blue += combined;
+
 	Color newcolor = Color(red, green, blue);
-	this->setColor(newcolor);
+	this->setColor(newcolor);*/
 }
 void Circle::Draw(){
 	double centerX = this->shapePoint.GetX();

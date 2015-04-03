@@ -29,6 +29,10 @@ void Physics::HandleCollisions(){
 				Circle *otherCircle = dynamic_cast<Circle *>(other);
 				if (myCircle->Intercepts(otherCircle)){
 					this->Collide(i, j);
+					Color c1 = myCircle->GetColor();
+					Color c2 = otherCircle->GetColor();
+					myCircle->setColor(c2);
+					otherCircle->setColor(c1);
 				}
 			}
 		}

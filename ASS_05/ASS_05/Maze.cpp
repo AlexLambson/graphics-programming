@@ -43,6 +43,7 @@ void Maze::Draw(){
 			this->mCells[i][j].Draw();
 		}
 	}
+	this->rat.Draw();
 }
 void Maze::Cell::Draw(){
 
@@ -79,29 +80,27 @@ void Maze::removeWalls(int x, int y){
 	me->visited = true;
 	Unvisited unvisited = this->unvisitedNeighbors(x, y);
 	while (unvisited.unvisitedNeighbor){
-		int randomPick = rand() % unvisited.xPos.size();
-		int newX, newY;
-		newX = unvisited.xPos[randomPick];
-		newY = unvisited.yPos[randomPick];
-		Cell * other = &this->mCells[newX][newY];
+		int randomPick = rand() % unvisited.uPos.size();
+		Position nextCell = unvisited.uPos[randomPick];
+		Cell * other = &this->mCells[nextCell.xPos][nextCell.yPos];
 
-		if (x < newX){
+		if (x < nextCell.xPos){
 			me->right = false;
 			other->left = false;
 		}
-		if (x > newX){
+		if (x > nextCell.xPos){
 			me->left = false;
 			other->right = false;
 		}
-		if (y < newY){
+		if (y < nextCell.yPos){
 			me->top = false;
 			other->bottom = false;
 		}
-		if (y > newY){
+		if (y > nextCell.yPos){
 			me->bottom = false;
 			other->top = false;
 		}
-		this->removeWalls(newX, newY);
+		this->removeWalls(nextCell.xPos, nextCell.yPos);
 		unvisited = this->unvisitedNeighbors(x, y);
 	}
 	return;
@@ -140,24 +139,16 @@ Unvisited Maze::unvisitedNeighbors(int myX, int myY){
 		beginY = true;
 	}
 	if (!beginX && !this->mCells[myX - 1][myY].visited){
-		unvisited.unvisitedNeighbor = true;
-		unvisited.xPos.push_back( myX - 1);
-		unvisited.yPos.push_back(myY);
+		unvisited.Push(myX - 1, myY);
 	}
 	if (!endX && !this->mCells[myX + 1][myY].visited){
-		unvisited.unvisitedNeighbor = true;
-		unvisited.xPos.push_back(myX + 1);
-		unvisited.yPos.push_back(myY);
+		unvisited.Push(myX + 1, myY);
 	}
 	if (!beginY && !this->mCells[myX][myY - 1].visited){
-		unvisited.unvisitedNeighbor = true;
-		unvisited.xPos.push_back(myX);
-		unvisited.yPos.push_back(myY - 1);
+		unvisited.Push(myX, myY - 1);
 	}
 	if (!endY && !this->mCells[myX][myY + 1].visited){
-		unvisited.unvisitedNeighbor = true;
-		unvisited.xPos.push_back(myX);
-		unvisited.yPos.push_back(myY + 1);
+		unvisited.Push(myX, myY + 1);
 	}
 	return unvisited;
 }

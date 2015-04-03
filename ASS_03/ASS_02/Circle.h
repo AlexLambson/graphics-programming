@@ -35,7 +35,7 @@ public:
 
 	void resetVelocity();
 
-	void modifyColors();
+	void modifyColors(Circle &other);
 
 private:
 	int colorcount = 0;

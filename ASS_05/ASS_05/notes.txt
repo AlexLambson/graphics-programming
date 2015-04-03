@@ -24,3 +24,20 @@ making maze{
 debugging strategies
 	- do it on a small maze
 	- do not use srand() until done debugging
+
+
+
+/*
+marks cell visited;
+mcells[i][j].visited = true;
+
+while I have an unvisited neghbor{
+	randomly pick an unvisited neighbor;
+	return if no neighbor is open;
+	if right{
+		remove my right wall;
+		remove neigbors left wall;
+		removeWalls(my neigbor); (x+1, y)
+	}
+}
+*/

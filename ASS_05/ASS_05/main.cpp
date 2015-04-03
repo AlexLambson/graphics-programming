@@ -13,10 +13,10 @@
 
 #include <cmath>
 #include <cstring>
-#include <cstdlib>
 #include <iostream>
 #include <random>
 #include <time.h>
+#include "Structs.h"
 #include "glut.h"
 #include "Maze.h"
 
@@ -28,60 +28,6 @@ Maze gMaze;
 int mazeX = 5;
 int mazeY = 4;
 
-
-// 
-// Functions that draw basic primitives
-//
-void DrawCircle(double x1, double y1, double radius)
-{
-	glBegin(GL_POLYGON);
-	for(int i=0; i<32; i++)
-	{
-		double theta = (double)i/32.0 * 2.0 * 3.1415926;
-		double x = x1 + radius * cos(theta);
-		double y = y1 + radius * sin(theta);
-		glVertex2d(x, y);
-	}
-	glEnd();
-}
-
-void DrawRectangle(double x1, double y1, double x2, double y2)
-{
-	glBegin(GL_QUADS);
-	glVertex2d(x1,y1);
-	glVertex2d(x2,y1);
-	glVertex2d(x2,y2);
-	glVertex2d(x1,y2);
-	glEnd();
-}
-
-void DrawTriangle(double x1, double y1, double x2, double y2, double x3, double y3)
-{
-	glBegin(GL_TRIANGLES);
-	glVertex2d(x1,y1);
-	glVertex2d(x2,y2);
-	glVertex2d(x3,y3);
-	glEnd();
-}
-
-// Outputs a string of text at the specified location.
-void DrawText(double x, double y, char *string)
-{
-	void *font = GLUT_BITMAP_9_BY_15;
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-	
-	int len, i;
-	glRasterPos2d(x, y);
-	len = (int) strlen(string);
-	for (i = 0; i < len; i++) 
-	{
-		glutBitmapCharacter(font, string[i]);
-	}
-
-    glDisable(GL_BLEND);
-}
 
 
 //
@@ -126,14 +72,23 @@ void keyboard(unsigned char c, int x, int y)
 		case 27: // escape character means to quit the program
 			exit(0);
 			break;
-		case 'b':
-			// do something when 'b' character is hit.
+		case 'w':
+			gMaze.rat.Move(Key::UP);
+			break;
+		case 's':
+			gMaze.rat.Move(Key::DOWN);
+			break;
+		case 'a':
+			gMaze.rat.Move(Key::LEFT);
+			break;
+		case 'd':
+			gMaze.rat.Move(Key::RIGHT);
 			break;
 		default:
 			return; // if we don't care, return without glutPostRedisplay()
 	}
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 

@@ -1,20 +1,9 @@
-#include <cstdlib>
-#include <vector>
+#pragma once
+#include "Structs.h"
+#include "Rat.h"
 #include <random>
 #include <glut.h>
 
-
-struct MazeSize{
-	int sizeX, sizeY;
-};
-struct Position{
-	int xPos, yPos;
-};
-struct Unvisited{
-	std::vector<int> xPos;
-	std::vector<int> yPos;
-	bool unvisitedNeighbor = false;
-};
 class Maze{
 	public:
 		Maze();
@@ -23,20 +12,7 @@ class Maze{
 		void createMaze(int x, int y);
 		void removeWalls(int x, int y); //initially 0, 0.
 		MazeSize getMazeSize();
-		/*
-		marks cell visited;
-		mcells[i][j].visited = true;
-
-		while I have an unvisited neghbor{
-			randomly pick an unvisited neighbor;
-			return if no neighbor is open;
-			if right{
-				remove my right wall;
-				remove neigbors left wall;
-				removeWalls(my neigbor); (x+1, y)
-			}
-		}
-		*/
+		Rat rat = Rat();
 	private:
 		void setMazeSize(int sizeX, int sizeY);
 		Unvisited unvisitedNeighbors(int myX, int myY);
