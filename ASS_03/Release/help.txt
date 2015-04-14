@@ -1,5 +1,0 @@
-Press "b" to spawn dots.
-
-left click a dot to give it more energy
-
-right click to push all dots up
