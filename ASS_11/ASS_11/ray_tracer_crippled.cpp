@@ -137,7 +137,7 @@ void Scene::CreateRay(int x, int y, Vector3 &ray)
 	}
 
 	// Calculate right_ratio and up_ratio.
-
+	
 	// Calculate where x,y on the screen maps to on the WorldWindow (film.)
 
 	// Generate a ray from the eye to the film position.
@@ -195,13 +195,64 @@ void Scene::CastRay(const Vector3 &ray,float &r,float &g,float &b)
 	{
 		//r = g = b = .5;
 
-		// ambient
+		// AMBIENT
 		r = s[closest_hit_sphere].ambient[0];
 		g = s[closest_hit_sphere].ambient[1];
 		b = s[closest_hit_sphere].ambient[2];
-		//diffuse
 
-		//specular
+		// DIFFUSE / SPECULAR
+		/*
+		-------------------------------
+		Notes:
+			Diffuse and specular are per light
+			loop through lights
+			//specular
+			Specular is applied when the angle between normal and L from intersect is opposite of angle between eye and normal from intersect (aka, the ray)
+			To check this, add vector eye to vector L. then normalize the product
+			//shadows
+			call RayIntersectSphere on vector from intersect to the light. Call on all sphere
+			if it hits anything, see if the distance from 
+		--------------------------------
+
+		intersect = where eye ray strike object
+		normal = normal of point i on shape (i - center of shape)
+		for each light as lightPoint{
+			L = vector from intersect to light source (lightPoint - intersect);
+			L.normalize();
+			dot = DotProduct(L, normal);
+			if(dot <= 0){
+				//skip this
+				continue;
+			}
+
+			for each sphere as sphere{
+				hits = Rayintersectsphere(sphere, l);
+				if(hits){
+					see if sphere is closer than light;
+					continue if it is;
+				}
+			}
+
+			// s is array of spheres
+			r += s[closest_hit_sphere].diffuse[0] * dot;
+			g += s[closest_hit_sphere].diffuse[1] * dot;
+			b += s[closest_hit_sphere].diffuse[2] * dot;
+
+			// specular
+			summed = L - ray;
+			dot2 = DotProduct(normal of intersect, summed.normalize());
+			if(dot2 > 0){
+				//specular exponent is from input file
+				contribution = pow(dot2, specularexponent);
+				r+= s[closest_hit_sphere].specular[0] * contribution;
+				g+= s[closest_hit_sphere].specular[1] * contribution;
+				b+= s[closest_hit_sphere].specular[2] * contribution;
+			}
+		}
+		if(r > 1) r = 1;
+		if(g > 1) g = 1;
+		if(b > 1) b = 1;
+		*/
 	}
 	else
 	{
