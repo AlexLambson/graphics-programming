@@ -15,11 +15,12 @@ public:
 
 class Beizer {
 public:
-	Beizer ();
+	Beizer (int iteration = 0);
 	Point2 Evaluate(float t);
 	void DrawCurve(int numberOfPoints = 20);
 	void DrawControlPoints();
 private:
 	vector<Point2> mPoints;
 	RGB color;
+	double mCircleRadius;
 };
