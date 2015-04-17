@@ -137,30 +137,48 @@ void Scene::CreateRay(int x, int y, Vector3 &ray)
 	}
 
 	// Calculate right_ratio and up_ratio.
-	
+	double rightRatio = (double)x / (double)(screen_x - 1);
+	double upRatio = (double)y / (double)(screen_y - 1);
 	// Calculate where x,y on the screen maps to on the WorldWindow (film.)
-
+	Point3 tempTop = AffineSum(ww_tl, ww_tr, rightRatio);
+	Point3 tempBottom = AffineSum(ww_bl, ww_br, rightRatio);
+	Point3 film = AffineSum(tempBottom, tempTop, upRatio);
 	// Generate a ray from the eye to the film position.
-
+	ray = film - eye;
+	ray.Normalize();
 }
 
 // These are the calculations we did in class.
 bool RayIntersectSphere(const Point3 &eye,
 						const Vector3 & ray, 
-						const Sphere & s,
-						float & distance,
+						const Sphere & s, 
+						float & distance, //return values
 						Point3 &intersection_point,
 						Vector3 &intersection_normal
 						)
 {
-	Vector3 es = eye - s.origin;
+	Vector3 w = eye - s.origin;
 
 	double A = DotProduct(ray, ray);
-	double B = 2 * DotProduct(ray, es);
-	double C = DotProduct(es, es) - s.radius*s.radius;
+	double B = 2 * DotProduct(ray, w);
+	double C = DotProduct(w, w) - s.radius*s.radius;
 
+	//check if the sphere is hit
+	double lineIntersects = B*B - 4*A*C;
+	if (lineIntersects < 0){
+		//sphere not hit
+		return false;
+	}
+	distance = (-B - sqrt(lineIntersects)) / (2 * A);
+	//check if sphere is behind eye
+	if (distance < 0){
+		//sphere behind eye
+		return false;
+	}
 
-
+	intersection_point = eye + ray * distance;
+	intersection_normal = intersection_point - s.origin;
+	intersection_normal.Normalize();
 	return true;
 }
 
@@ -193,12 +211,12 @@ void Scene::CastRay(const Vector3 &ray,float &r,float &g,float &b)
 	// Add correct lighting. This is for Program #11.
 	if(closest_hit_sphere != -1)
 	{
-		//r = g = b = .5;
+		r = g = b = 0.0;
 
 		// AMBIENT
-		r = s[closest_hit_sphere].ambient[0];
-		g = s[closest_hit_sphere].ambient[1];
-		b = s[closest_hit_sphere].ambient[2];
+		r += s[closest_hit_sphere].ambient[0];
+		g += s[closest_hit_sphere].ambient[1];
+		b += s[closest_hit_sphere].ambient[2];
 
 		// DIFFUSE / SPECULAR
 		/*
@@ -253,6 +271,34 @@ void Scene::CastRay(const Vector3 &ray,float &r,float &g,float &b)
 		if(g > 1) g = 1;
 		if(b > 1) b = 1;
 		*/
+		for(int light = 0; light < num_point_lights; light++){
+			Vector3 lightVector = pl[light] - closest_point;
+			lightVector.Normalize();
+
+			float tempDistanceForShadow;
+			Point3 tempIntersectionForShadow;
+			Vector3 tempIntersectionNormal;
+			bool blocked = false;
+			for (int j = 0; j < num_spheres; j++){
+				bool temp = RayIntersectSphere(closest_point, lightVector, s[j], tempDistanceForShadow, tempIntersectionForShadow, tempIntersectionNormal);
+				if (temp){
+					blocked = true;
+					break;
+				}
+			}
+			if (!blocked){
+				double dot = DotProduct(lightVector, closest_normal);
+				if (dot > 0){
+					double diffuseLight = dot;
+					r += diffuseLight*s[closest_hit_sphere].diffuse[0];
+					g += diffuseLight*s[closest_hit_sphere].diffuse[1];
+					b += diffuseLight*s[closest_hit_sphere].diffuse[2];
+				}
+			}
+		}
+		if (r > 1) r = 1;
+		if (g > 1) g = 1;
+		if (b > 1) b = 1;
 	}
 	else
 	{
