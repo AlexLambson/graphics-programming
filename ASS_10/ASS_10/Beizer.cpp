@@ -38,3 +38,7 @@ void Beizer::DrawCurve(int numberOfPoints){
 
 	glEnd();
 }
+
+void Beizer::DrawControlPoints(){
+
+}
