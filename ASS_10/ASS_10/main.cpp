@@ -13,29 +13,33 @@
 
 #include <cmath>
 #include <cstring>
-#include "glut.h"
+#include "Beizer.h"
 
+
+enum MenuType{
+	MENU_ADD_BEIZER,
+	MENU_REMOVE_BEIZER
+};
+
+enum SelectType{
+	SELECT_BEIZER,
+	SELECT_HANDLE
+};
 
 // Global Variables (Only what you need!)
 double screen_x = 700;
 double screen_y = 500;
-
+bool clickedDown = false;
+int activeHandle = -1;
+int activeBeizer = -1;
+vector<Beizer> gBeizers;
+SelectType G_SELECT_TYPE = SELECT_HANDLE;
+double clickedAtX = -1;
+double clickedAtY = -1;
 
 // 
 // Functions that draw basic primitives
 //
-void DrawCircle(double x1, double y1, double radius)
-{
-	glBegin(GL_POLYGON);
-	for(int i=0; i<32; i++)
-	{
-		double theta = (double)i/32.0 * 2.0 * 3.1415926;
-		double x = x1 + radius * cos(theta);
-		double y = y1 + radius * sin(theta);
-		glVertex2d(x, y);
-	}
-	glEnd();
-}
 
 void DrawRectangle(double x1, double y1, double x2, double y2)
 {
@@ -75,7 +79,17 @@ void DrawText(double x, double y, char *string)
     glDisable(GL_BLEND);
 }
 
-
+void DrawSelectType(){
+	double x = .2;
+	double y = screen_y / 100 - .3;
+	if (G_SELECT_TYPE == SELECT_BEIZER){
+		DrawText(x, y, "Selecting whole curve");
+	}
+	if (G_SELECT_TYPE == SELECT_HANDLE){
+		DrawText(x, y, "Selecting control points");
+	}
+	DrawText(x, y - .2, "Press \"s\" to switch");
+}
 //
 // GLUT callback functions
 //
@@ -86,17 +100,13 @@ void display(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Test lines that draw all three shapes and some text.
-	// Delete these when you get your code working.
-	glColor3d(0,0,1);
-	DrawRectangle(200, 200, 250, 250);
-	DrawTriangle(300, 300, 350, 300, 350, 350);
-	DrawCircle(50, 50, 30);
-
-	glColor3d(0,0,0);
-	DrawText(10,100,"Can you see this black text and 3 blue shapes?");
-
+	for (int i = 0; i < gBeizers.size(); i++){
+		gBeizers[i].DrawControlPoints();
+		gBeizers[i].DrawCurve();
+	}
+	DrawSelectType();
 	glutSwapBuffers();
+	glutPostRedisplay();
 }
 
 
@@ -109,8 +119,22 @@ void keyboard(unsigned char c, int x, int y)
 		case 27: // escape character means to quit the program
 			exit(0);
 			break;
-		case 'b':
-			// do something when 'b' character is hit.
+		case 's':
+			if (G_SELECT_TYPE == SELECT_BEIZER){
+				G_SELECT_TYPE = SELECT_HANDLE;
+				if (activeBeizer != -1){
+					gBeizers[activeBeizer].DeactivateBeizer();
+				}
+				activeBeizer = -1;
+			}
+			else {
+				G_SELECT_TYPE = SELECT_BEIZER;
+				clickedDown = false;
+				if (activeBeizer != -1){
+					gBeizers[activeBeizer].DeactivateHandle();
+				}
+				activeBeizer = activeHandle = -1;
+			}
 			break;
 		default:
 			return; // if we don't care, return without glutPostRedisplay()
@@ -134,7 +158,7 @@ void reshape(int w, int h)
 	// Set the projection mode to 2D orthographic, and set the world coordinates:
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, w, 0, h);
+	gluOrtho2D(0, screen_x/100, 0, screen_y/100);
 	glMatrixMode(GL_MODELVIEW);
 
 }
@@ -143,11 +167,48 @@ void reshape(int w, int h)
 // system whenever any mouse button goes up or down.
 void mouse(int mouse_button, int state, int x, int y)
 {
+	//switch to bottom left
+	y = screen_y - y;
 	if (mouse_button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
 	{
+		for (int i = 0; i < gBeizers.size(); i++){
+			bool wasActive = false;
+			if (gBeizers[i].IsActive()){
+				gBeizers[i].DeactivateBeizer();
+				wasActive = true;
+			}
+			int handle = gBeizers[i].MouseHitHandle(x, y);
+			if (handle != -1){
+				activeBeizer = i;
+				activeHandle = handle;
+				if (G_SELECT_TYPE == SELECT_HANDLE){
+					gBeizers[activeBeizer].ActivateHandle(handle);
+					clickedDown = true;
+					break;
+				}
+				if (G_SELECT_TYPE == SELECT_BEIZER && !wasActive){
+					gBeizers[activeBeizer].ActivateBeizer();
+					clickedAtX = x;
+					clickedAtY = y;
+					clickedDown = true;
+					break;
+				}
+			}
+		}
 	}
 	if (mouse_button == GLUT_LEFT_BUTTON && state == GLUT_UP) 
 	{
+		if (activeBeizer != -1){
+			if (G_SELECT_TYPE == SELECT_HANDLE){
+				gBeizers[activeBeizer].DeactivateHandle();
+				clickedDown = false;
+				activeBeizer = activeHandle = -1;
+			}
+			if (G_SELECT_TYPE == SELECT_BEIZER){
+				clickedDown = false;
+				clickedAtX = clickedAtY = -1;
+			}
+		}
 	}
 	if (mouse_button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) 
 	{
@@ -157,10 +218,25 @@ void mouse(int mouse_button, int state, int x, int y)
 	}
 	glutPostRedisplay();
 }
-
+void movement(int x, int y){
+	y = screen_y - y;
+	if (activeBeizer != -1){
+		if (clickedDown && G_SELECT_TYPE == SELECT_HANDLE){
+			gBeizers[activeBeizer].SetHandlePoint(activeHandle, x, y);
+		}
+		if (clickedDown && G_SELECT_TYPE == SELECT_BEIZER){
+			double differenceX = x - clickedAtX;
+			double differenceY = y - clickedAtY;
+			clickedAtX = x;
+			clickedAtY = y;
+			gBeizers[activeBeizer].Move(differenceX, differenceY);
+		}
+	}
+}
 // Your initialization code goes here.
 void InitializeMyStuff()
 {
+	gBeizers.push_back(Beizer());
 }
 
 
@@ -187,6 +263,7 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(keyboard);
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
+	glutMotionFunc(movement);
 
 	glColor3d(0,0,0); // forground color
 	glClearColor(1, 1, 1, 0); // background color

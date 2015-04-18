@@ -295,6 +295,16 @@ void Scene::CastRay(const Vector3 &ray,float &r,float &g,float &b)
 					b += diffuseLight*s[closest_hit_sphere].diffuse[2];
 				}
 			}
+			Vector3 summed = lightVector + ray;
+			summed.Normalize();
+			float dot2 = DotProduct(closest_normal, summed);
+			if (dot2 > 0){
+				//specular exponent is from input file
+				float contribution = pow(dot2, 10);
+				r += s[closest_hit_sphere].specular[0] * contribution;
+				g += s[closest_hit_sphere].specular[1] * contribution;
+				b += s[closest_hit_sphere].specular[2] * contribution;
+			}
 		}
 		if (r > 1) r = 1;
 		if (g > 1) g = 1;
