@@ -16,16 +16,6 @@
 #include "Beizer.h"
 
 
-enum MenuType{
-	MENU_ADD_BEIZER,
-	MENU_REMOVE_BEIZER
-};
-
-enum SelectType{
-	SELECT_BEIZER,
-	SELECT_HANDLE
-};
-
 // Global Variables (Only what you need!)
 double screen_x = 700;
 double screen_y = 500;
@@ -36,6 +26,13 @@ vector<Beizer> gBeizers;
 SelectType G_SELECT_TYPE = SELECT_HANDLE;
 double clickedAtX = -1;
 double clickedAtY = -1;
+
+void DeleteSelectedBeizer(){
+	if (G_SELECT_TYPE == SELECT_BEIZER && activeBeizer != -1){
+		gBeizers.erase(gBeizers.begin() + activeBeizer);
+		activeBeizer = -1;
+	}
+}
 
 // 
 // Functions that draw basic primitives
@@ -82,6 +79,7 @@ void DrawText(double x, double y, char *string)
 void DrawSelectType(){
 	double x = .2;
 	double y = screen_y / 100 - .3;
+	glColor3f(0, 0, 0);
 	if (G_SELECT_TYPE == SELECT_BEIZER){
 		DrawText(x, y, "Selecting whole curve");
 	}
@@ -136,6 +134,9 @@ void keyboard(unsigned char c, int x, int y)
 				activeBeizer = activeHandle = -1;
 			}
 			break;
+		case 'd':
+			DeleteSelectedBeizer();
+			break;
 		default:
 			return; // if we don't care, return without glutPostRedisplay()
 	}
@@ -170,13 +171,15 @@ void mouse(int mouse_button, int state, int x, int y)
 	//switch to bottom left
 	y = screen_y - y;
 	if (mouse_button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) 
-	{
-		for (int i = 0; i < gBeizers.size(); i++){
-			bool wasActive = false;
-			if (gBeizers[i].IsActive()){
-				gBeizers[i].DeactivateBeizer();
-				wasActive = true;
+	{	
+		int wasActive = -1;
+		for (int first = 0; first < gBeizers.size(); first++){
+			if (gBeizers[first].IsActive()){
+				gBeizers[first].DeactivateBeizer();
+				wasActive = first;
 			}
+		}
+		for (int i = 0; i < gBeizers.size(); i++){
 			int handle = gBeizers[i].MouseHitHandle(x, y);
 			if (handle != -1){
 				activeBeizer = i;
@@ -186,7 +189,7 @@ void mouse(int mouse_button, int state, int x, int y)
 					clickedDown = true;
 					break;
 				}
-				if (G_SELECT_TYPE == SELECT_BEIZER && !wasActive){
+				if (G_SELECT_TYPE == SELECT_BEIZER && i != wasActive){
 					gBeizers[activeBeizer].ActivateBeizer();
 					clickedAtX = x;
 					clickedAtY = y;
@@ -238,7 +241,39 @@ void InitializeMyStuff()
 {
 	gBeizers.push_back(Beizer());
 }
-
+void ChangeCurveColor(MenuColor color){
+	if (G_SELECT_TYPE == SELECT_BEIZER && activeBeizer != -1){
+		gBeizers[activeBeizer].SetColor(color);
+	}
+}
+void menu(int item){
+	//reset just in case
+	int iteration = gBeizers.size() + 1;
+	switch (item)
+	{
+	case MenuType::MENU_ADD_BEIZER:
+		if (gBeizers.size() < 5){
+			gBeizers.push_back(Beizer(iteration));
+			activeBeizer = activeHandle = -1;
+			clickedDown = false;
+		}
+		break;
+	case MenuType::MENU_REMOVE_BEIZER:
+		DeleteSelectedBeizer();
+		activeBeizer = activeHandle = -1;
+		clickedDown = false;
+		break;
+	case MENU_BLACK:
+	case MENU_BLUE:
+	case MENU_GREEN:
+	case MENU_PURPLE:
+	case MENU_RED:
+		ChangeCurveColor((MenuColor) item);
+		break;
+	default:
+		break;
+	}
+}
 
 int main(int argc, char **argv)
 {
@@ -256,7 +291,7 @@ int main(int argc, char **argv)
 	} 
 	else 
 	{
-		glutCreateWindow("This appears in the title bar");
+		glutCreateWindow("Alex's Beizer Curves");
 	}
 
 	glutDisplayFunc(display);
@@ -264,6 +299,19 @@ int main(int argc, char **argv)
 	glutReshapeFunc(reshape);
 	glutMouseFunc(mouse);
 	glutMotionFunc(movement);
+	int submenu;
+	submenu = glutCreateMenu(menu);
+	glutAddMenuEntry("Red", MenuColor::MENU_RED);
+	glutAddMenuEntry("Green", MenuColor::MENU_GREEN);
+	glutAddMenuEntry("Blue", MenuColor::MENU_BLUE);
+	glutAddMenuEntry("Purple", MenuColor::MENU_PURPLE);
+	glutAddMenuEntry("Black", MenuColor::MENU_BLACK);
+
+	glutCreateMenu(menu);
+	glutAddMenuEntry("Add Curve", MenuType::MENU_ADD_BEIZER);
+	glutAddMenuEntry("Remove Curve", MenuType::MENU_REMOVE_BEIZER);
+	glutAddSubMenu("Curve Color", submenu);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	glColor3d(0,0,0); // forground color
 	glClearColor(1, 1, 1, 0); // background color
