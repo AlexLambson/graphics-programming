@@ -15,24 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graphics.h">
+    <ClInclude Include="Maze.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vector.h">
+    <ClInclude Include="Rat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ray_tracer_crippled.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vector.cpp">
+    <ClCompile Include="Maze.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="model.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
+    <ClCompile Include="Rat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Structs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

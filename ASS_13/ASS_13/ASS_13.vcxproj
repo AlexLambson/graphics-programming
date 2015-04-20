@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{56C02EF6-8345-4943-80FA-4C055884159B}</ProjectGuid>
+    <ProjectGuid>{3CAC418A-E6A6-4DDE-B5C3-296666482783}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ASS_11</RootNamespace>
+    <RootNamespace>ASS_13</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -76,15 +76,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="graphics.h" />
-    <ClInclude Include="vector.h" />
+    <ClInclude Include="Maze.h" />
+    <ClInclude Include="Rat.h" />
+    <ClInclude Include="Structs.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ray_tracer_crippled.cpp" />
-    <ClCompile Include="vector.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="model.txt" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Maze.cpp" />
+    <ClCompile Include="Rat.cpp" />
+    <ClCompile Include="Structs.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
