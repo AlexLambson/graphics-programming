@@ -42,26 +42,36 @@ void Maze::createMaze(int x, int y){
 	this->mCells[end][y - 1].walls.top = false;
 	this->rat = Rat(0.5, 0.5);
 }
-void Maze::Draw(){
+void Maze::Draw(GLuint * texName){
 	int xSize = this->mCells.size();
+
+	glEnable(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D,
+		GL_TEXTURE_WRAP_S,
+		GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,
+		GL_TEXTURE_WRAP_T,
+		GL_REPEAT);
+	glBindTexture(GL_TEXTURE_2D, texName[0]);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex2d(-.5, -.5);
+	glTexCoord2f(10, 0); glVertex2d(this->getMazeSize().sizeX + .5, -.5);
+	glTexCoord2f(10, 10); glVertex2d(this->getMazeSize().sizeX + .5, this->getMazeSize().sizeY + .5);
+	glTexCoord2f(0, 10); glVertex2d(-.5, this->getMazeSize().sizeY + .5);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+
 	for (int i = 0; i < xSize; i++){
 		int ySize = this->mCells[i].size();
 		for (int j = 0; j < ySize; j++){
-			this->mCells[i][j].Draw(this->mazeSize.sizeX, this->mazeSize.sizeY);
+			this->mCells[i][j].Draw(this->mazeSize.sizeX, this->mazeSize.sizeY, texName);
 		}
-	}
-	if (Globals::current_view == rat_view || Globals::current_view == perspective_view){
-		glBegin(GL_QUADS);
-		glColor3ub(200, 200, 150);
-		glVertex3d(-.5, -.5, 0);
-		glVertex3d(this->mazeSize.sizeX + .5, -.5, 0);
-		glVertex3d(this->mazeSize.sizeX + .5, this->mazeSize.sizeY + .5, 0);
-		glVertex3d(-.5, this->mazeSize.sizeY +.5, 0);
-		glEnd();
 	}
 	this->rat.Draw();
 }
-void Maze::Cell::Draw(int mazeX, int mazeY){
+void Maze::Cell::Draw(int mazeX, int mazeY, GLuint * texName){
 
 	int x, y;
 	x = this->position.xPos;
@@ -88,49 +98,35 @@ void Maze::Cell::Draw(int mazeX, int mazeY){
 		glEnd();
 	}
 	if (Globals::current_view == perspective_view || Globals::current_view == rat_view){
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texName[1]);
 		glBegin(GL_QUADS);
-		glColor3ub(this->r, this->g, this->b);
-		if (this->walls.bottom){
-			glVertex3i(x, y, 0.0);
-			glVertex3i(x + 1, y, 0);
-			glVertex3i(x + 1, y, 1);
-			glVertex3i(x, y, 1);
+		if (this->walls.top && this->position.yPos == mazeY - 1) {
+			glTexCoord2d(0, 0); glVertex3f(x, y + 1, 0);
+			glTexCoord2d(1, 0); glVertex3f(x + 1, y + 1, 0);
+			glTexCoord2d(1, 1); glVertex3f(x + 1, y + 1, 1);
+			glTexCoord2d(0, 1); glVertex3f(x, y + 1, 1);
 		}
-		if (this->walls.left){
-			glVertex3i(x, y + 1, 0);
-			glVertex3i(x, y, 0);
-			glVertex3i(x, y, 1);
-			glVertex3i(x, y + 1, 1);
+		if (this->walls.bottom) {
+			glTexCoord2d(0, 0); glVertex3f(x, y, 0);
+			glTexCoord2d(1, 0); glVertex3f(x + 1, y, 0);
+			glTexCoord2d(1, 1); glVertex3f(x + 1, y, 1);
+			glTexCoord2d(0, 1); glVertex3f(x, y, 1);
 		}
-		/*
-		if (this->position.xPos == mazeX - 1 || this->position.yPos == mazeY - 1){
-			if (this->walls.right){
-				glVertex3i(x + 1, y, 0);
-				glVertex3i(x + 1, y + 1, 0);
-				glVertex3i(x + 1, y + 1, 1);
-				glVertex3i(x + 1, y, 1);
-			}
-			if (this->walls.top){
-				glVertex3i(x + 1, y + 1, 0);
-				glVertex3i(x, y + 1, 0);
-				glVertex3i(x, y + 1, 1);
-				glVertex3i(x + 1, y + 1, 0);
-			}
+		if (this->walls.right && this->position.xPos == mazeX - 1) {
+			glTexCoord2d(0, 0); glVertex3f(x + 1, y + 1, 0);
+			glTexCoord2d(1, 0); glVertex3f(x + 1, y, 0);
+			glTexCoord2d(1, 1); glVertex3f(x + 1, y, 1);
+			glTexCoord2d(0, 1); glVertex3f(x + 1, y + 1, 1);
 		}
-		*/
-		if (this->walls.right && this->position.xPos == mazeX - 1){
-			glVertex3i(x + 1, y, 0);
-			glVertex3i(x + 1, y + 1, 0);
-			glVertex3i(x + 1, y + 1, 1);
-			glVertex3i(x + 1, y, 1);
+		if (this->walls.left) {
+			glTexCoord2d(0, 0); glVertex3f(x, y, 0);
+			glTexCoord2d(1, 0); glVertex3f(x, y + 1, 0);
+			glTexCoord2d(1, 1); glVertex3f(x, y + 1, 1);
+			glTexCoord2d(0, 1); glVertex3f(x, y, 1);
 		}
-		if (this->walls.top && this->position.yPos == mazeY - 1){
-			glVertex3i(x + 1, y + 1, 0);
-			glVertex3i(x, y + 1, 0);
-			glVertex3i(x, y + 1, 1);
-			glVertex3i(x + 1, y + 1, 1);
-		}
-		glEnd();
+		glEnd(); 
+		glDisable(GL_TEXTURE_2D);
 	}
 }
 void Maze::Cell::setPosition(int x, int y){

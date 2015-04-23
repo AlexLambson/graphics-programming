@@ -2,6 +2,7 @@
 #include "Structs.h"
 #include <random>
 #include <cstdlib>
+#include "tga.h"
 using namespace std;
 #include <glut.h>
 class Maze;
@@ -31,7 +32,7 @@ class Maze{
 	public:
 		Maze();
 		Maze(int sizeX, int sizeY);
-		void Draw(); //draw all cells. tell cells to draw themselves
+		void Draw(GLuint * texName); //draw all cells. tell cells to draw themselves
 		void createMaze(int x, int y);
 		void removeWalls(int x, int y); //initially 0, 0.
 		//get the walls for the rat
@@ -47,7 +48,7 @@ class Maze{
 			public:
 				Cell();
 				void setPosition(int x, int y);
-				void Draw(int mazeX, int mazeY);
+				void Draw(int mazeX, int mazeY, GLuint * texname);
 				//draws from bottom left to top right.
 				//make all true in constucter
 				//wall is on or off

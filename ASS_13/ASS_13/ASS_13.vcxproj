@@ -79,12 +79,18 @@
     <ClInclude Include="Maze.h" />
     <ClInclude Include="Rat.h" />
     <ClInclude Include="Structs.h" />
+    <ClInclude Include="Tga.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Maze.cpp" />
     <ClCompile Include="Rat.cpp" />
     <ClCompile Include="Structs.cpp" />
+    <ClCompile Include="Tga.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="brick.tga" />
+    <Image Include="grass.tga" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
